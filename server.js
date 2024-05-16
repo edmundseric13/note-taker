@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -31,7 +32,7 @@ app.post('/api/notes', (req, res) => {
     if (err) throw err;
     let notes = JSON.parse(data);
     let newNote = req.body;
-    newNote.id = notes.length + 1;
+    newNote.id = uuidv4(); // Assign a unique id to the note
     notes.push(newNote);
     fs.writeFile('./develop/db/db.json', JSON.stringify(notes), (err) => {
       if (err) throw err;
@@ -54,4 +55,7 @@ app.delete('/api/notes/:id', (req, res) => {
       res.json({ message: `Note with id ${req.params.id} deleted` });
     });
   });
+});
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, './index.html'));
 });
